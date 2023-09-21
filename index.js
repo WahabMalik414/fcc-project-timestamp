@@ -45,8 +45,12 @@ app.get("/api/:date?", (req, res) => {
     }
   } else {
     const currentUnixStamp = Date.now();
+    const utcString = new Date(Date.now()).toUTCString();
 
-    res.json({ unix: currentUnixStamp });
+    res.json({
+      unix: currentUnixStamp,
+      utc: utcString,
+    });
   }
 });
 
