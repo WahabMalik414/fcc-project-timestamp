@@ -23,13 +23,25 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
+function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
+}
+app.get("/api/", (req, res) => {
+  const currentUnixStamp = Date.now();
+  const utcString = new Date(Date.now()).toUTCString();
+  res.json({
+    unix: currentUnixStamp,
+    utc: utcString,
+  });
+});
 app.get("/api/:date?", (req, res) => {
   const { date } = req.params;
-
+  console.log(new Date(date));
   if (date) {
-    let inputDate = date.includes("-")
-      ? new Date(date)
-      : new Date(parseInt(date));
+    let inputDate =
+      date.includes("-") || date.includes(" ") || date.includes(",")
+        ? new Date(Date.parse(date))
+        : new Date(parseInt(date));
     if (!isNaN(inputDate)) {
       // Valid input date
       const unixStamp = inputDate.getTime();
