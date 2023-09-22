@@ -26,14 +26,15 @@ app.get("/api/hello", function (req, res) {
 function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
-app.get("/api/", (req, res) => {
-  const currentUnixStamp = Date.now();
-  const utcString = new Date(Date.now()).toUTCString();
-  res.json({
-    unix: currentUnixStamp,
-    utc: utcString,
-  });
-});
+
+// app.get("/api/", (req, res) => {
+//   const date = new Date();
+//   res.json({
+//     unix: Date.now(),
+//     utc: date.toUTCString(),
+//   });
+// });
+
 app.get("/api/:date?", (req, res) => {
   const { date } = req.params;
   console.log(new Date(date));
@@ -56,12 +57,10 @@ app.get("/api/:date?", (req, res) => {
       res.status(404).json({ error: "Invalid Date" });
     }
   } else {
-    const currentUnixStamp = Date.now();
-    const utcString = new Date(Date.now()).toUTCString();
-
+    const date = new Date();
     res.json({
-      unix: currentUnixStamp,
-      utc: utcString,
+      unix: date.getTime(),
+      utc: date.toUTCString(),
     });
   }
 });
