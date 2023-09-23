@@ -23,45 +23,38 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
-function isValidDate(d) {
-  return d instanceof Date && !isNaN(d);
-}
-
-// app.get("/api/", (req, res) => {
-//   const date = new Date();
-//   res.json({
-//     unix: Date.now(),
-//     utc: date.toUTCString(),
-//   });
-// });
-
 app.get("/api/:date?", (req, res) => {
   const { date } = req.params;
-  console.log(new Date(date));
-  if (date) {
-    let inputDate =
-      date.includes("-") || date.includes(" ") || date.includes(",")
-        ? new Date(Date.parse(date))
-        : new Date(parseInt(date));
-    if (!isNaN(inputDate)) {
-      // Valid input date
-      const unixStamp = inputDate.getTime();
-      const utcStamp = inputDate.toUTCString();
 
-      // Send the JSON response
-      res.status(200).json({
-        unix: unixStamp,
-        utc: utcStamp,
-      });
-    } else {
-      res.status(404).json({ error: "Invalid Date" });
-    }
-  } else {
+  // Check for undefined, null, and empty date parameter
+  if (date === undefined || date === null || !date || date == "") {
+    // Return the current time in unix and utc
     const date = new Date();
     res.json({
       unix: date.getTime(),
       utc: date.toUTCString(),
     });
+    return;
+  }
+
+  // Try to parse the date parameter as a date
+  let inputDate =
+    date.includes("-") || date.includes(" ") || date.includes(",")
+      ? new Date(Date.parse(date))
+      : new Date(parseInt(date));
+
+  if (!isNaN(inputDate)) {
+    // Valid input date
+    const unixStamp = inputDate.getTime();
+    const utcStamp = inputDate.toUTCString();
+
+    // Send the JSON response
+    res.status(200).json({
+      unix: unixStamp,
+      utc: utcStamp,
+    });
+  } else {
+    res.status(404).json({ error: "Invalid Date" });
   }
 });
 
